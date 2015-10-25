@@ -95,13 +95,14 @@ module Pilot
     end
 
     def distribute_build(uploaded_build, options)
-      Helper.log.info "Distributing new build to testers"
+      distribution_mode = options[:distribute_external] ? 'external' : 'internal'
+      Helper.log.info "Distributing new build to #{distribution_mode} testers"
 
       # First, set the changelog (if necessary)
       uploaded_build.update_build_information!(whats_new: options[:changelog])
 
       # Submit for internal beta testing
-      uploaded_build.build_train.update_testing_status!(true, 'external')
+      uploaded_build.build_train.update_testing_status!(true, distribution_mode)
       return true
     end
   end
